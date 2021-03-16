@@ -16,12 +16,13 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
-from core.views import Login, Proyectos, Arquitecturas
+from core.views import Login, Proyectos, Arquitecturas, Versiones
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('login/', Login.as_view(), name='login'),
     path('proyectos/', Proyectos.as_view(), name='proyectos'),
-    path('arquitecturas/', Arquitecturas.as_view(), name='arquitecturas')
+    path('arquitecturas/', Arquitecturas.as_view(), name='arquitecturas'),
+    path('version/', Versiones.as_view(), name='version')
 ]
