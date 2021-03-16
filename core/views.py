@@ -6,7 +6,7 @@ import jwt
 
 from firebase_admin import credentials, db, initialize_app
 
-from .helpers.proyectos.proyectos import addNewProject
+from .helpers.proyectos.proyectos import addNewProject, handleRemoveProject
 from .helpers.arquitecturas.arquitecturas import createArchitecture
 from .helpers.versiones.versiones import createNewVersion
 from .helpers.elementos.elementos import createElements
@@ -50,6 +50,12 @@ class Proyectos(APIView):
         token = request.data['token']
         data = jwt.decode(token, 'secret', algorithms=["HS256"])
         projects = addNewProject(data)
+        return Response(projects)
+
+    def delete(self, request, *args, **kwargs):
+        token = request.data['token']
+        data = jwt.decode(token, 'secret', algorithms=["HS256"])
+        projects = handleRemoveProject(data)
         return Response(projects)
 
 
