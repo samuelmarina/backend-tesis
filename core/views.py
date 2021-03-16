@@ -6,6 +6,8 @@ import jwt
 
 from firebase_admin import credentials, db, initialize_app
 
+from .helpers.proyectos.proyectos import addNewProject
+
 
 cred = credentials.Certificate('./firebase-sdk.json')
 initialize_app(cred, {
@@ -15,11 +17,12 @@ initialize_app(cred, {
 
 class Login(APIView):
     def post(self, request, *args, **kwargs):
-        """ Request to log in an user or create a new one
+        """ Solicitud para inicio de sesión de un usuario o 
+        crear uno nuevo
         Returns
         -------
         list
-            a list of all the projects of the user
+            una lista con todos los proyectos del usuario
         """
         token = request.data['token']
         user = jwt.decode(token, 'secret', algorithms=['HS256'])
@@ -30,3 +33,18 @@ class Login(APIView):
         })
         projects_ref = db.reference('/users/' + user_id + '/projects')
         return Response(projects_ref.get())
+
+
+class Proyectos(APIView):
+    def post(self, request, *args, **kwargs):
+        """ Solicitud para agregar un nuevo nuevo proyecto
+        a la base de datos del usuario
+        Returns
+        -------
+        list
+            una lista actualizada con todos los proyectos del usuario 
+        """
+        token = request.data['token']
+        data = jwt.decode(token, 'secret', algorithms=["HS256"])
+        projects = addNewProject(data)
+        return Response(projects)
