@@ -4,6 +4,10 @@ from firebase_admin import db
 def addNewProject(data):
     """ Agregar un nuevo proyecto a la base de
     datos del usuario
+    Parameters
+    ----------
+    data: json
+        diccionario con toda la información de la solicitud
     Returns
     -------
     list
