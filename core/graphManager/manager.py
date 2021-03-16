@@ -166,10 +166,10 @@ def getClassName(base, L):
         nombre de la clase
     """
     try:
-        class_name = highlight[L-1]['#text']
+        class_name = base[L-1]['#text']
         return class_name
     except:
-        class_name = highlight[L-1]['ref']['#text']
+        class_name = base[L-1]['ref']['#text']
         return class_name
 
 
