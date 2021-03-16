@@ -7,6 +7,7 @@ import jwt
 from firebase_admin import credentials, db, initialize_app
 
 from .helpers.proyectos.proyectos import addNewProject
+from .helpers.arquitecturas.arquitecturas import createArchitecture
 
 
 cred = credentials.Certificate('./firebase-sdk.json')
@@ -37,7 +38,7 @@ class Login(APIView):
 
 class Proyectos(APIView):
     def post(self, request, *args, **kwargs):
-        """ Solicitud para agregar un nuevo nuevo proyecto
+        """ Solicitud para agregar un nuevo proyecto
         a la base de datos del usuario
         Returns
         -------
@@ -48,3 +49,18 @@ class Proyectos(APIView):
         data = jwt.decode(token, 'secret', algorithms=["HS256"])
         projects = addNewProject(data)
         return Response(projects)
+
+
+class Arquitecturas(APIView):
+    def post(self, request, *args, **kwargs):
+        """ Solicitud para agregar una nueva arquitectura
+        a la base de datos del usuario
+        Returns
+        -------
+        list
+            una lista actualizada con todas las arquitecturas de un
+            proyecto del usuario
+        """
+        data = request.data
+        architectures = createArchitecture(data)
+        return Response(architectures)
