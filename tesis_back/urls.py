@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
-from core.views import Login, Proyectos, Arquitecturas, Versiones
+from core.views import Login, Proyectos, Arquitecturas, Versiones, Elementos
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -24,5 +24,6 @@ urlpatterns = [
     path('login/', Login.as_view(), name='login'),
     path('proyectos/', Proyectos.as_view(), name='proyectos'),
     path('arquitecturas/', Arquitecturas.as_view(), name='arquitecturas'),
-    path('version/', Versiones.as_view(), name='version')
+    path('version/', Versiones.as_view(), name='version'),
+    path('elementos/', Elementos.as_view(), name='elementos')
 ]

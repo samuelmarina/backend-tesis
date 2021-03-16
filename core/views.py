@@ -9,6 +9,7 @@ from firebase_admin import credentials, db, initialize_app
 from .helpers.proyectos.proyectos import addNewProject
 from .helpers.arquitecturas.arquitecturas import createArchitecture
 from .helpers.versiones.versiones import createNewVersion
+from .helpers.elementos.elementos import createElements
 
 
 cred = credentials.Certificate('./firebase-sdk.json')
@@ -72,3 +73,10 @@ class Versiones(APIView):
         data = request.data
         versions = createNewVersion(data)
         return Response(versions)
+
+
+class Elementos(APIView):
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        elems = createElements(data)
+        return Response(elems)
