@@ -85,3 +85,58 @@ def deleteVersion(url, verIndex):
         'versions': versions_arr
     })
     return versions_arr
+
+
+def handleEditVersion(data):
+    """ Manejar la edición del nombre de una versión
+    de la base de datos del usuario
+
+    Parameters
+    ----------
+    data: dict
+        diccionario con la información de la solicitud
+
+    Returns
+    -------
+    list
+        lista actualizada con todas las versiones de una 
+        arquitectura del usuario
+    """
+    uid = data['user_id']
+    ver_index = int(data['ver_index'])
+    arc_index = str(data['arch_index'])
+    project_index = str(data['project_index'])
+    new_ver_name = data['ver_name']
+    url = '/users/' + uid + '/projects/' + \
+        project_index + '/architectures/' + arc_index
+    versions = editVersion(url, ver_index, new_ver_name)
+    return versions
+
+
+def editVersion(url, verIndex, verName):
+    """ Editar el nombre de una versión de la base de datos
+    del usuario
+
+    Parameters
+    ----------
+    url: str
+        dirección de la base de datos
+    verIndex: int
+        índice de la versión
+    verName: str
+        nuevo nombre de la versión
+
+    Returns
+    -------
+    list
+        lista actualizada con todas las versiones de una 
+        arquitectura del usuario
+    """
+    version_ref = db.reference(url + '/versions/')
+    versions_arr = version_ref.get()
+    versions_arr[verIndex]['name'] = verName
+    arc_ref = db.reference(url)
+    arc_ref.update({
+        'versions': versions_arr
+    })
+    return versions_arr
