@@ -8,7 +8,7 @@ from firebase_admin import credentials, db, initialize_app
 
 from .helpers.proyectos.proyectos import addNewProject, handleRemoveProject, handleEditProject
 from .helpers.arquitecturas.arquitecturas import createArchitecture, handleDeleteArchitecture, handleEditArchitecture
-from .helpers.versiones.versiones import createNewVersion, handleDeleteVersion
+from .helpers.versiones.versiones import createNewVersion, handleDeleteVersion, handleEditVersion
 from .helpers.elementos.elementos import createElements
 
 
@@ -153,6 +153,21 @@ class Versiones(APIView):
         token = request.data['token']
         data = jwt.decode(token, 'secret', algorithms=["HS256"])
         versions = handleDeleteVersion(data)
+        return Response(versions)
+
+    def put(self, request, *args, **kwargs):
+        """ Solicitud para editar el nombre de una versión
+        de la base de datos del usuario
+
+        Returns
+        -------
+        list
+            una lista actualizada con todas las versiones de
+            una arquitectura del usuario
+        """
+        token = request.data['token']
+        data = jwt.decode(token, 'secret', algorithms=["HS256"])
+        versions = handleEditVersion(data)
         return Response(versions)
 
 
