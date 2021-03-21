@@ -7,7 +7,7 @@ import jwt
 from firebase_admin import credentials, db, initialize_app
 
 from .helpers.proyectos.proyectos import addNewProject, handleRemoveProject, handleEditProject
-from .helpers.arquitecturas.arquitecturas import createArchitecture
+from .helpers.arquitecturas.arquitecturas import createArchitecture, handleDeleteArchitecture
 from .helpers.versiones.versiones import createNewVersion
 from .helpers.elementos.elementos import createElements
 
@@ -91,6 +91,12 @@ class Arquitecturas(APIView):
         """
         data = request.data
         architectures = createArchitecture(data)
+        return Response(architectures)
+
+    def delete(self, request, *args, **kwargs):
+        token = request.data['token']
+        data = jwt.decode(token, 'secret', algorithms=["HS256"])
+        architectures = handleDeleteArchitecture(data)
         return Response(architectures)
 
 
