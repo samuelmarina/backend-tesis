@@ -7,7 +7,7 @@ import jwt
 from firebase_admin import credentials, db, initialize_app
 
 from .helpers.proyectos.proyectos import addNewProject, handleRemoveProject, handleEditProject
-from .helpers.arquitecturas.arquitecturas import createArchitecture, handleDeleteArchitecture
+from .helpers.arquitecturas.arquitecturas import createArchitecture, handleDeleteArchitecture, handleEditArchitecture
 from .helpers.versiones.versiones import createNewVersion
 from .helpers.elementos.elementos import createElements
 
@@ -83,6 +83,7 @@ class Arquitecturas(APIView):
     def post(self, request, *args, **kwargs):
         """ Solicitud para agregar una nueva arquitectura
         a la base de datos del usuario
+
         Returns
         -------
         list
@@ -94,9 +95,33 @@ class Arquitecturas(APIView):
         return Response(architectures)
 
     def delete(self, request, *args, **kwargs):
+        """ Solicitud para eliminar una arquitectura de un 
+        proyecto de la base de datos del usuario
+
+        Returns
+        -------
+        list
+            una lista actualizada con todas las arquitecturas de un
+            proyecto del usuario
+        """
         token = request.data['token']
         data = jwt.decode(token, 'secret', algorithms=["HS256"])
         architectures = handleDeleteArchitecture(data)
+        return Response(architectures)
+
+    def put(self, request, *args, **kwargs):
+        """ Solicitud para editar el nombre de una arquitecturas
+        de la base de datos del usuario
+
+        Returns
+        -------
+        list
+            una lista actualizada con todas las arquitecturas de un
+            proyecto del usuario
+        """
+        token = request.data['token']
+        data = jwt.decode(token, 'secret', algorithms=["HS256"])
+        architectures = handleEditArchitecture(data)
         return Response(architectures)
 
 
