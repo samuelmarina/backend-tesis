@@ -74,3 +74,54 @@ def removeProject(url, index):
         'projects': projects_arr
     })
     return projects_arr
+
+
+def handleEditProject(data):
+    """ Manejar la edición de un proyecto en la
+    base de datos
+
+    Parameters
+    ----------
+    data: json
+        diccionario con toda la información de la solicitud
+
+    Returns
+    -------
+    list
+        lista actualizada de todos los proyectos del usuario
+    """
+    uid = data['user_id']
+    user_id = data['user_id']
+    project_index = int(data['project_index'])
+    project_new_name = data['project_name']
+    url = '/users/' + str(uid)
+    projects = editProject(url, project_index, project_new_name)
+    return projects
+
+
+def editProject(url, projectIndex, projectName):
+    """ Editar el nombre de un proyecto en la base
+    de datos
+
+    Parameters
+    ----------
+    url: str
+        dirección de la base de datos
+    projectIndex: int
+        índice del proyecto
+    projectName: str
+        nuevo nombre del proyecto
+
+    Returns
+    -------
+    list
+        lista actualizada de todos los proyectos del usuario
+    """
+    projects_ref = db.reference(url + '/projects/')
+    projects = projects_ref.get()
+    projects[projectIndex]['name'] = projectName
+    user_ref = db.reference(url)
+    user_ref.update({
+        'projects': projects
+    })
+    return projects
