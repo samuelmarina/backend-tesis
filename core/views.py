@@ -8,7 +8,7 @@ from firebase_admin import credentials, db, initialize_app
 
 from .helpers.proyectos.proyectos import addNewProject, handleRemoveProject, handleEditProject
 from .helpers.arquitecturas.arquitecturas import createArchitecture, handleDeleteArchitecture, handleEditArchitecture
-from .helpers.versiones.versiones import createNewVersion
+from .helpers.versiones.versiones import createNewVersion, handleDeleteVersion
 from .helpers.elementos.elementos import createElements
 
 
@@ -127,8 +127,32 @@ class Arquitecturas(APIView):
 
 class Versiones(APIView):
     def post(self, request, *args, **kwargs):
+        """ Solicitud para agregar una nueva versión
+        a la base de datos del usuario
+
+        Returns
+        -------
+        list
+            una lista actualizada con todas las versiones de
+            una arquitectura del usuario
+        """
         data = request.data
         versions = createNewVersion(data)
+        return Response(versions)
+
+    def delete(self, request, *args, **kwargs):
+        """ Solicitud para eliminar una versión de la
+        base de datos del usuario
+
+        Returns
+        -------
+        list
+            una lista actualizada con todas las versiones de
+            una arquitectura del usuario
+        """
+        token = request.data['token']
+        data = jwt.decode(token, 'secret', algorithms=["HS256"])
+        versions = handleDeleteVersion(data)
         return Response(versions)
 
 
