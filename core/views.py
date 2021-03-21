@@ -173,6 +173,14 @@ class Versiones(APIView):
 
 class Elementos(APIView):
     def post(self, request, *args, **kwargs):
+        """ Solicitud para agregar elementos a la base
+        de datos del usuario
+        Returns
+        -------
+        list
+            lista actualizada con todos los elementos de una
+            versión del usuario
+        """
         data = request.data
         elems = createElements(data)
         return Response(elems)
