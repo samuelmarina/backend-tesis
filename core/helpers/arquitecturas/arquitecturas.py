@@ -1,5 +1,6 @@
 from firebase_admin import db
 from ...graphManager.manager import manageFiles
+from rest_framework.response import Response
 
 
 def createArchitecture(data):
@@ -23,22 +24,30 @@ def createArchitecture(data):
     edges = []
     node_set = set()
     edge_set = set()
-    manageFiles(files, nodes, edges, node_set, edge_set)
-    elements = {
-        'nodes': nodes,
-        'edges': edges
-    }
-    new_arch = {
-        'name': name,
-        'versions': [
-            {
-                'name': name + ' - versión inicial',
-                'elements': elements
-            }
-        ]
-    }
-    architectures = addNewArchitecture(elements, new_arch, index, uid)
-    return architectures
+    try:
+        manageFiles(files, nodes, edges, node_set, edge_set)
+        if not nodes:
+            return Response(data=None, status=406)
+        elements = {
+            'nodes': nodes,
+            'edges': edges
+        }
+        new_arch = {
+            'name': name,
+            'versions': [
+                {
+                    'name': name + ' - versión inicial',
+                    'elements': elements
+                }
+            ]
+        }
+        try:
+            architectures = addNewArchitecture(elements, new_arch, index, uid)
+            return Response(data=architectures)
+        except:
+            return Response(data=None, status=500)
+    except:
+        return Response(data=None, status=409)
 
 
 def addNewArchitecture(elems, architecture, project_index, uid):
