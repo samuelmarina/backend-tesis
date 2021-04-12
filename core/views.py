@@ -91,8 +91,7 @@ class Arquitecturas(APIView):
             proyecto del usuario
         """
         data = request.data
-        architectures = createArchitecture(data)
-        return Response(architectures)
+        return createArchitecture(data)
 
     def delete(self, request, *args, **kwargs):
         """ Solicitud para eliminar una arquitectura de un 
