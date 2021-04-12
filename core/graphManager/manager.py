@@ -40,6 +40,8 @@ def handleGraphBuild(json, nodes, edges, node_set, edge_set):
         set pata mantener constancia de las aristas ya creadas
     """
     base = json['doxygen']['compounddef']
+    if(base['compoundname'] == 'README.md'):
+        return
     node = createNode(base, node_set)
     if node is not None:
         nodes.append(node)
