@@ -26,6 +26,9 @@ def createArchitecture(data):
     edge_set = set()
     try:
         manageFiles(files, nodes, edges, node_set, edge_set)
+    except:
+        return Response(status=409)
+    else:
         if not nodes:
             return Response(data=None, status=406)
         elements = {
@@ -46,8 +49,6 @@ def createArchitecture(data):
             return Response(data=architectures)
         except:
             return Response(data=None, status=500)
-    except:
-        return Response(data=None, status=409)
 
 
 def addNewArchitecture(elems, architecture, project_index, uid):
