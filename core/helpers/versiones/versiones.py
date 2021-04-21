@@ -1,4 +1,5 @@
 from firebase_admin import db
+from rest_framework.response import Response
 
 
 def createNewVersion(data):
@@ -22,17 +23,20 @@ def createNewVersion(data):
     project_index = data['project_index']
     url = '/users/' + uid + '/projects/' + \
         project_index + '/architectures/' + arc_index
-    version_ref = db.reference(url + '/versions/' + ver_index)
-    version = version_ref.get()
-    version['name'] = version_name
-    versions_arr_ref = db.reference(url + '/versions/')
-    versions_array = versions_arr_ref.get()
-    versions_array.append(version)
-    arch_ref = db.reference(url)
-    arch_ref.update({
-        'versions': versions_array
-    })
-    return versions_array
+    try:
+        version_ref = db.reference(url + '/versions/' + ver_index)
+        version = version_ref.get()
+        version['name'] = version_name
+        versions_arr_ref = db.reference(url + '/versions/')
+        versions_array = versions_arr_ref.get()
+        versions_array.append(version)
+        arch_ref = db.reference(url)
+        arch_ref.update({
+            'versions': versions_array
+        })
+        return Response(data=versions_array)
+    except:
+        return Response(status=500)
 
 
 def handleDeleteVersion(data):
@@ -56,8 +60,11 @@ def handleDeleteVersion(data):
     project_index = str(data['project_index'])
     url = '/users/' + uid + '/projects/' + \
         project_index + '/architectures/' + arc_index
-    versions = deleteVersion(url, ver_index)
-    return versions
+    try:
+        versions = deleteVersion(url, ver_index)
+        return Response(data=versions)
+    except:
+        return Response(status=500)
 
 
 def deleteVersion(url, verIndex):
@@ -109,8 +116,11 @@ def handleEditVersion(data):
     new_ver_name = data['ver_name']
     url = '/users/' + uid + '/projects/' + \
         project_index + '/architectures/' + arc_index
-    versions = editVersion(url, ver_index, new_ver_name)
-    return versions
+    try:
+        versions = editVersion(url, ver_index, new_ver_name)
+        return Response(data=versions)
+    except:
+        return Response(status=500)
 
 
 def editVersion(url, verIndex, verName):

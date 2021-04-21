@@ -135,8 +135,7 @@ class Versiones(APIView):
             una arquitectura del usuario
         """
         data = request.data
-        versions = createNewVersion(data)
-        return Response(versions)
+        return createNewVersion(data)
 
     def delete(self, request, *args, **kwargs):
         """ Solicitud para eliminar una versión de la
@@ -150,8 +149,7 @@ class Versiones(APIView):
         """
         token = request.data['token']
         data = jwt.decode(token, 'secret', algorithms=["HS256"])
-        versions = handleDeleteVersion(data)
-        return Response(versions)
+        return handleDeleteVersion(data)
 
     def put(self, request, *args, **kwargs):
         """ Solicitud para editar el nombre de una versión
@@ -165,8 +163,7 @@ class Versiones(APIView):
         """
         token = request.data['token']
         data = jwt.decode(token, 'secret', algorithms=["HS256"])
-        versions = handleEditVersion(data)
-        return Response(versions)
+        return handleEditVersion(data)
 
 
 class Elementos(APIView):
