@@ -30,12 +30,15 @@ class Login(APIView):
         token = request.data['token']
         user = jwt.decode(token, 'secret', algorithms=['HS256'])
         user_id = str(user['userid'])
-        user_ref = db.reference('/users/' + user_id)
-        user_ref.update({
-            'name': user['name']
-        })
-        projects_ref = db.reference('/users/' + user_id + '/projects')
-        return Response(projects_ref.get())
+        try:
+            user_ref = db.reference('/users/' + user_id)
+            user_ref.update({
+                'name': user['name']
+            })
+            projects_ref = db.reference('/users/' + user_id + '/projects')
+            return Response(projects_ref.get())
+        except:
+            return Response(status=500)
 
 
 class Proyectos(APIView):
@@ -49,8 +52,7 @@ class Proyectos(APIView):
         """
         token = request.data['token']
         data = jwt.decode(token, 'secret', algorithms=["HS256"])
-        projects = addNewProject(data)
-        return Response(projects)
+        return addNewProject(data)
 
     def delete(self, request, *args, **kwargs):
         """ Solicitud para eliminar un proyecto
@@ -62,8 +64,7 @@ class Proyectos(APIView):
         """
         token = request.data['token']
         data = jwt.decode(token, 'secret', algorithms=["HS256"])
-        projects = handleRemoveProject(data)
-        return Response(projects)
+        return handleRemoveProject(data)
 
     def put(self, request, *args, **kwargs):
         """ Solicitud para editar el nombre de un

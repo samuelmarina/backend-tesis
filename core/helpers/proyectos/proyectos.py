@@ -1,4 +1,5 @@
 from firebase_admin import db
+from rest_framework.response import Response
 
 
 def addNewProject(data):
@@ -17,16 +18,19 @@ def addNewProject(data):
     user_id = str(data['user_id'])
     project_name = data['project_name']
     url = '/users/' + user_id
-    projects_ref = db.reference(url + '/projects')
-    projects = projects_ref.get()
-    projects.append({
-        'name': project_name,
-    })
-    user_ref = db.reference(url)
-    user_ref.update({
-        'projects': projects
-    })
-    return projects
+    try:
+        projects_ref = db.reference(url + '/projects')
+        projects = projects_ref.get()
+        projects.append({
+            'name': project_name,
+        })
+        user_ref = db.reference(url)
+        user_ref.update({
+            'projects': projects
+        })
+        return Response(data=projects)
+    except:
+        return Response(status=500)
 
 
 def handleRemoveProject(data):
@@ -46,8 +50,7 @@ def handleRemoveProject(data):
     user_id = str(data['user_id'])
     project_index = int(data['project_index'])
     url = '/users/' + user_id
-    projects = removeProject(url, project_index)
-    return projects
+    return removeProject(url, project_index)
 
 
 def removeProject(url, index):
@@ -66,14 +69,17 @@ def removeProject(url, index):
     list
         lista actualizada de todos los proyectos del usuario
     """
-    projects_ref = db.reference(url + '/projects')
-    projects_arr = projects_ref.get()
-    projects_arr.pop(index)
-    user_ref = db.reference(url)
-    user_ref.update({
-        'projects': projects_arr
-    })
-    return projects_arr
+    try:
+        projects_ref = db.reference(url + '/projects')
+        projects_arr = projects_ref.get()
+        projects_arr.pop(index)
+        user_ref = db.reference(url)
+        user_ref.update({
+            'projects': projects_arr
+        })
+        return Response(data=projects_arr)
+    except:
+        return Response(status=500)
 
 
 def handleEditProject(data):
@@ -95,8 +101,7 @@ def handleEditProject(data):
     project_index = int(data['project_index'])
     project_new_name = data['project_name']
     url = '/users/' + str(uid)
-    projects = editProject(url, project_index, project_new_name)
-    return projects
+    return editProject(url, project_index, project_new_name)
 
 
 def editProject(url, projectIndex, projectName):
@@ -117,11 +122,14 @@ def editProject(url, projectIndex, projectName):
     list
         lista actualizada de todos los proyectos del usuario
     """
-    projects_ref = db.reference(url + '/projects/')
-    projects = projects_ref.get()
-    projects[projectIndex]['name'] = projectName
-    user_ref = db.reference(url)
-    user_ref.update({
-        'projects': projects
-    })
-    return projects
+    try:
+        projects_ref = db.reference(url + '/projects/')
+        projects = projects_ref.get()
+        projects[projectIndex]['name'] = projectName
+        user_ref = db.reference(url)
+        user_ref.update({
+            'projects': projects
+        })
+        return Response(data=projects)
+    except:
+        return Response(status=500)
