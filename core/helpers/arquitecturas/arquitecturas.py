@@ -101,8 +101,11 @@ def handleDeleteArchitecture(data):
     project_index = data['project_index']
     arch_index = int(data['arch_index'])
     url = '/users/' + uid + '/projects/' + str(project_index)
-    architectures = deleteArchitecture(url, arch_index)
-    return architectures
+    try:
+        architectures = deleteArchitecture(url, arch_index)
+        return Response(architectures)
+    except:
+        return Response(data=None, status=500)
 
 
 def deleteArchitecture(url, archIndex):
@@ -150,8 +153,11 @@ def handleEditArchitecture(data):
     arch_index = int(data['arch_index'])
     new_arch_name = data['arch_name']
     url = '/users/' + uid + '/projects/' + str(project_index)
-    architectures = editArchitecture(url, arch_index, new_arch_name)
-    return architectures
+    try:
+        architectures = editArchitecture(url, arch_index, new_arch_name)
+        return Response(data=architectures)
+    except:
+        return Response(data=None, status=500)
 
 
 def editArchitecture(url, archIndex, archName):

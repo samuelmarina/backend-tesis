@@ -106,8 +106,7 @@ class Arquitecturas(APIView):
         """
         token = request.data['token']
         data = jwt.decode(token, 'secret', algorithms=["HS256"])
-        architectures = handleDeleteArchitecture(data)
-        return Response(architectures)
+        return handleDeleteArchitecture(data)
 
     def put(self, request, *args, **kwargs):
         """ Solicitud para editar el nombre de una arquitecturas
@@ -121,8 +120,7 @@ class Arquitecturas(APIView):
         """
         token = request.data['token']
         data = jwt.decode(token, 'secret', algorithms=["HS256"])
-        architectures = handleEditArchitecture(data)
-        return Response(architectures)
+        return handleEditArchitecture(data)
 
 
 class Versiones(APIView):
