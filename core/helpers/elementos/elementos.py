@@ -1,6 +1,5 @@
 from firebase_admin import db
 from ...graphManager.manager import getEdgeIds, getNodeIds, manageFiles
-from rest_framework.response import Response
 
 
 def createElements(data):
@@ -23,26 +22,15 @@ def createElements(data):
     files = dict(data)['file']
     url = '/users/' + uid + '/projects/' + project_index + \
         '/architectures/' + arc_index + '/versions/' + ver_index
-    try:
-        ver_data = getNodesAndEdges(url)
-    except:
-        return Response(status=500)
-    else:
-        try:
-            manageFiles(files, ver_data['nodes'], ver_data['edges'],
-                        ver_data['node_set'], ver_data['edge_set'])
-        except:
-            return Response(status=409)
-        else:
-            elements = {
-                'nodes': ver_data['nodes'],
-                'edges': ver_data['edges']
-            }
-            try:
-                new_elems = addNewElements(url, elements)
-                return Response(data=new_elems)
-            except:
-                return Response(status=500)
+    ver_data = getNodesAndEdges(url)
+    manageFiles(files, ver_data['nodes'], ver_data['edges'],
+                ver_data['node_set'], ver_data['edge_set'])
+    elements = {
+        'nodes': ver_data['nodes'],
+        'edges': ver_data['edges']
+    }
+    new_elems = addNewElements(url, elements)
+    return new_elems
 
 
 def getNodesAndEdges(url):

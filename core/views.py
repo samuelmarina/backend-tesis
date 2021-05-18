@@ -177,4 +177,5 @@ class Elementos(APIView):
             versión del usuario
         """
         data = request.data
-        return createElements(data)
+        elems = createElements(data)
+        return Response(elems)
