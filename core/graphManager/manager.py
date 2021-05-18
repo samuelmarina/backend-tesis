@@ -114,42 +114,99 @@ def handleEdgeCreation(base, edges, nodes, node_set, edge_set):
     codeline = base['programlisting']['codeline']
     for line in codeline:
         highlight = line['highlight']
-        if highlight and type(highlight) is list:
-            L = len(highlight)
-            relation = highlight[L-2]['#text']
-            if relation is None:
-                continue
-            if relation == 'implements':
-                class_name = getClassName(highlight, L)
-                all_classes = handleClassDivision(class_name)
-                for c in all_classes:
-                    if c == "":
-                        continue
-                    edge = createEdge(base, c, relation,
-                                      edges, nodes, node_set, edge_set)
-            elif relation == 'extends':
-                class_name = getClassName(highlight, L)
-                if 'implements' not in class_name:
+        if highlight:
+            if type(highlight) is list:
+                L = len(highlight)
+                relation = highlight[L-2]['#text']
+                if relation is None:
+                    continue
+                if relation == 'implements':
+                    class_name = getClassName(highlight, L)
                     all_classes = handleClassDivision(class_name)
                     for c in all_classes:
                         if c == "":
                             continue
-                        edge = createEdge(base, c,
-                                          relation, edges, nodes, node_set, edge_set)
-                else:
-                    classes = class_name.split('implements')
-                    all_extends = handleClassDivision(classes[0])
-                    all_implements = handleClassDivision(classes[1])
-                    for c in all_extends:
-                        if c == "":
-                            continue
-                        edge = createEdge(base, c,
-                                          relation, edges, nodes, node_set, edge_set)
-                    for c in all_implements:
-                        if c == "":
-                            continue
-                        edge = createEdge(base, c,
-                                          "implements", edges, nodes, node_set, edge_set)
+                        edge = createEdge(base, c, relation,
+                                          edges, nodes, node_set, edge_set)
+                elif relation == 'extends':
+                    class_name = getClassName(highlight, L)
+                    if 'implements' not in class_name:
+                        all_classes = handleClassDivision(class_name)
+                        for c in all_classes:
+                            if c == "":
+                                continue
+                            edge = createEdge(base, c,
+                                              relation, edges, nodes, node_set, edge_set)
+                    else:
+                        classes = class_name.split('implements')
+                        all_extends = handleClassDivision(classes[0])
+                        all_implements = handleClassDivision(classes[1])
+                        for c in all_extends:
+                            if c == "":
+                                continue
+                            edge = createEdge(base, c,
+                                              relation, edges, nodes, node_set, edge_set)
+                        for c in all_implements:
+                            if c == "":
+                                continue
+                            edge = createEdge(base, c,
+                                              "implements", edges, nodes, node_set, edge_set)
+            else:
+                if '#text' in highlight:
+                    if checkUse(highlight['#text']):
+                        class_name = ''
+                        relation = 'use'
+                        if highlight['#text'] == 'use;':
+                            class_name = getUseClassName(
+                                highlight['ref']['#text'])
+                        else:
+                            class_name = getUseClassName(highlight['#text'])
+
+                        createEdge(base, class_name, relation,
+                                   edges, nodes, node_set, edge_set)
+
+
+def checkUse(base):
+    """ Comprobar si la clase está siendo
+    utilizada
+    Parameters
+    ----------
+    base: string
+        string con la información de la clase
+    """
+    if len(base) < 3:
+        return False
+    temp = base[0:3]
+    if temp == 'use':
+        return True
+    else:
+        return False
+
+
+def getUseClassName(base):
+    """ Obtener el nombre de la clase de
+    tipo use de un nodo
+
+    Parameters
+    ----------
+    base: string
+        string con la información de la clase
+
+    Returns
+    -------
+    str
+        nombre de la clase  
+    """
+    class_name = ""
+    for c in base[::-1]:
+        if c == "\\":
+            break
+        class_name = c + class_name
+    if class_name[len(class_name)-1] == ';':
+        class_name = class_name[0:len(class_name)-1]
+    if class_name[0:3] == 'use':
+        class_name = class_name[3:len(class_name)]
+    return class_name
 
 
 def getClassName(base, L):
@@ -212,6 +269,12 @@ def createEdge(base, class_name, relation, edges, nodes, node_set, edge_set):
     if data['id'] not in edge_set:
         edges.append({"data": data, "scratch": scratch})
         edge_set.add(data['id'])
+    else:
+        if scratch['relation'] != 'use':
+            for i in range(len(edges)):
+                if edges[i]['data'] == data:
+                    edges[i]['scratch'] = scratch
+                    break
 
 
 def createNode2(class_name, nodes, node_set):
