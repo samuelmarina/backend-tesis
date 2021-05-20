@@ -140,7 +140,13 @@ def handleEdgeCreation(base, edges, nodes, node_set, edge_set):
                     else:
                         classes = class_name.split('implements')
                         all_extends = handleClassDivision(classes[0])
-                        all_implements = handleClassDivision(classes[1])
+                        all_implements = ''
+                        if classes[len(classes)-1] == '':
+                            temp_implements = highlight[L-1]['ref']['#text']
+                            all_implements = handleClassDivision(
+                                temp_implements)
+                        else:
+                            all_implements = handleClassDivision(classes[1])
                         for c in all_extends:
                             if c == "":
                                 continue
